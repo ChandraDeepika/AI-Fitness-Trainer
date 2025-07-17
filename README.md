@@ -54,7 +54,7 @@ Finally, a chatbot is also integrated which answers questions on fitness and fit
 ## How to run
 - Clone the repository
 ```
-git clone https://github.com/Chandan-h-509/AI-Fitness-Trainer
+git clone https://github.com/ChandraDeepika/AI-Fitness-Trainer
 ```
 - Go to the models directory
 ```
