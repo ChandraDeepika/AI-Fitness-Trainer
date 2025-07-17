@@ -64,6 +64,4 @@ cd models
 ```
 streamlit run 1_🏠_Home.py
 ```
-Feel free to raise any issues/bugs/suggestions in the issues page of this repository.
 
-Thank You!!
