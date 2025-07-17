@@ -1,192 +1,348 @@
 import streamlit as st
 import json
-
-import requests  
-import streamlit as st  
-from streamlit_lottie import st_lottie  
+import requests
+from streamlit_lottie import st_lottie
 from PIL import Image
+import base64
+from io import BytesIO
 
-
-# Lottie Files: https://lottiefiles.com/
-
-html = """
-<div style="background-color:#025246 ;padding:10px">
-<h2 style="color:white;text-align:center;">Tutorial</h2>
-</div>"""
-st.markdown(html, unsafe_allow_html=True)
-
-
-# def load_lottieurl(url: str):
-#     r = requests.get(url)
-#     if r.status_code != 200:
-#         return None
-#     return r.json()
+# Custom CSS for enhanced styling
+st.markdown("""
+<style>
+    /* Main container styling */
+    .main {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
     
+    /* Card styling */
+    .tutorial-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 10px 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .tutorial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Text styling in cards */
+    .tutorial-card h3 {
+        color: #025246;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+    
+    .tutorial-card p {
+        color: #333333;
+        font-size: 1.1em;
+        line-height: 1.6;
+    }
+    
+    .tutorial-card ul {
+        color: #333333;
+        font-size: 1.1em;
+        line-height: 1.8;
+        padding-left: 20px;
+    }
+    
+    .tutorial-card li {
+        margin-bottom: 10px;
+    }
+    
+    /* Header styling */
+    .header {
+        background: linear-gradient(135deg, #025246 0%, #013a32 100%);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header h2 {
+        color: white;
+        text-align: center;
+        margin: 0;
+        font-size: 2.5em;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Button styling */
+    .stButton>button {
+        background: linear-gradient(135deg, #025246 0%, #013a32 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+    
+    .stButton>button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Image styling */
+    .tutorial-image {
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .tutorial-image:hover {
+        transform: scale(1.02);
+    }
+    
+    /* Progress bar styling */
+    .progress-bar {
+        height: 10px;
+        background: linear-gradient(90deg, #025246 0%, #013a32 100%);
+        border-radius: 5px;
+        margin: 10px 0;
+    }
+    
+    /* Animation container */
+    .animation-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .animation-container h3 {
+        color: #025246;
+        text-align: center;
+        font-size: 1.5em;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-# lottie_hello = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_M9p23l.json")
+# Header with animation
+st.markdown("""
+<div class="header">
+    <h2>🏋️‍♂️ Workout Tutorials</h2>
+</div>
+""", unsafe_allow_html=True)
 
+# Load Lottie animations
+def load_lottieurl(url: str):
+    try:
+        r = requests.get(url, timeout=10)
+        if r.status_code == 200:
+            return r.json()
+        return None
+    except Exception as e:
+        return None
 
+# Load and display welcome animation
+fitness_animation = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_obhph3sh.json")
+if fitness_animation:
+    st_lottie(fitness_animation, height=200, key="welcome")
 
-# New
-img1 = Image.open("./images/dumbbell.webp")
-img2= Image.open("./images/squats.jpg")
-img3 = Image.open("./images/pushups.jpeg")
-img4 = Image.open("./images/shoulder.jpeg")
+# Load animations
+workout_animation = load_lottieurl("https://assets2.lottiefiles.com/packages/lf20_2ks3pjua.json")
 
+# Function to convert PIL Image to base64
+def image_to_base64(image):
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    return base64.b64encode(buffered.getvalue()).decode()
 
-app_mode = st.sidebar.selectbox("Choose the tutorial", ["About","Bicep Curls","Squats","Pushups","Shoulder press"])
+# Load images
+img1 = Image.open("models/images/dumbbell.webp")
+img2 = Image.open("models/images/squats.jpg")
+img3 = Image.open("models/images/pushups.jpeg")
+img4 = Image.open("models/images/shoulder.jpeg")
+
+# Convert images to base64
+img1_base64 = image_to_base64(img1)
+img2_base64 = image_to_base64(img2)
+img3_base64 = image_to_base64(img3)
+img4_base64 = image_to_base64(img4)
+
+# Sidebar with enhanced styling
+st.sidebar.markdown("""
+<div style='text-align: center; padding: 20px; background: linear-gradient(135deg, #025246 0%, #013a32 100%); border-radius: 10px;'>
+    <h3 style='color: white;'>Choose Your Tutorial</h3>
+</div>
+""", unsafe_allow_html=True)
+
+app_mode = st.sidebar.selectbox("", ["About", "Bicep Curls", "Squats", "Pushups", "Shoulder press"])
+
 if app_mode == "About":
-    #st_lottie(lottie_hello,key="hello")
+    st.markdown("""
+    <div style='text-align: center; margin: 20px 0;'>
+        <h2>Master Your Workout Form</h2>
+        <p>Select a tutorial from the sidebar to learn proper exercise techniques</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    with st.container():
-        st.write("---")
-        st.header("Have a look at these video tutorials")
-        st.write("##")
-        image_column, text_column = st.columns((1, 2))
-        with image_column:
-            st.image(img1, width=325)
-        with text_column:
-            st.subheader("Bicep Curls")
-            st.write(
-                """
-                Get armed with knowledge! Watch this bicep curl tutorial and unlock the secret to sleeve-busting strength!
-                """
-            )
-            st.markdown("[Watch Video...](https://youtu.be/ykJmrZ5v0Oo)")
+    # Tutorial cards with hover effects
+    tutorials = [
+        {
+            "title": "Bicep Curls",
+            "image_base64": img1_base64,
+            "description": "Get armed with knowledge! Watch this bicep curl tutorial and unlock the secret to sleeve-busting strength!",
+            "video_url": "https://youtu.be/ykJmrZ5v0Oo"
+        },
+        {
+            "title": "Squats",
+            "image_base64": img2_base64,
+            "description": "Get lower, get stronger! Dive into this squat tutorial and unlock the power of a rock-solid foundation!",
+            "video_url": "https://youtu.be/YaXPRqUwItQ"
+        },
+        {
+            "title": "Pushups",
+            "image_base64": img3_base64,
+            "description": "Push your limits, pump up your power! Join us for this push-up tutorial and unleash your inner strength!",
+            "video_url": "https://youtu.be/IODxDxX7oi4"
+        },
+        {
+            "title": "Shoulder Press",
+            "image_base64": img4_base64,
+            "description": "Elevate your strength, shoulder to shoulder! Don't miss this shoulder press tutorial to reach new heights of power!",
+            "video_url": "https://youtu.be/qEwKCR5JCog"
+        }
+    ]
     
-        
-    with st.container():
-        image_column, text_column = st.columns((1, 2))
-    with image_column:
-        st.image(img2, width=325)
-    with text_column:
-        st.subheader("Squats")
-        st.write(
-            """
-            Get lower, get stronger! Dive into this squat tutorial and unlock the power of a rock-solid foundation!.
-            """
-        )
-        st.markdown("[Watch Video...](https://youtu.be/YaXPRqUwItQ)")
-    
-    with st.container():
-        image_column, text_column = st.columns((1, 2))
-    with image_column:
-        st.image(img3, width=325)
-    with text_column:
-        st.subheader("Pushups")
-        st.write(
-            """
-            Push your limits, pump up your power! Join us for this push-up tutorial and unleash your inner strength!.
-            """
-        )
-        st.markdown("[Watch Video...](https://youtu.be/IODxDxX7oi4)")
-
-    with st.container():
-        image_column, text_column = st.columns((1, 2))
-    with image_column:
-        st.image(img4, width=325)
-    with text_column:
-        st.subheader("Shoulder press")
-        st.write(
-            """
-            Elevate your strength, shoulder to shoulder! Don't miss this shoulder press tutorial to reach new heights of power!.
-            """
-        )
-        st.markdown("[Watch Video...](https://youtu.be/qEwKCR5JCog)")
-
+    for tutorial in tutorials:
+        st.markdown(f"""
+        <div class="tutorial-card">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div style="flex: 1;">
+                    <img src="data:image/png;base64,{tutorial['image_base64']}" class="tutorial-image" style="width: 100%; max-width: 300px;">
+                </div>
+                <div style="flex: 2;">
+                    <h3>{tutorial['title']}</h3>
+                    <p>{tutorial['description']}</p>
+                    <a href="{tutorial['video_url']}" target="_blank">
+                        <button class="stButton">Watch Tutorial</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
 elif app_mode == "Bicep Curls":
-    st.markdown("## Bicep Curls")
-    st.markdown("Here's a step-by-step tutorial for bicep curls:")
+    st.markdown("""
+    <div class="header">
+        <h2>💪 Bicep Curls Tutorial</h2>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
-        st.write("##")
-        st.write("""
-        - Stand up straight with a dumbbell in each hand. Keep your elbows close to your torso and rotate the palms of your hands until they are facing forward. This will be your starting position.
-        
-        - Now, keeping the upper arms stationary, exhale and curl the weights while contracting your biceps. 
-        
-        - Continue to raise the weights until your biceps are fully contracted and the dumbbells are at shoulder level. 
-        
-        - Hold the contracted position for a brief pause as you squeeze your biceps.
-        
-        - Then, inhale and slowly begin to lower the dumbbells back to the starting position.
-        
-        Remember, it's important to use appropriate weight for your fitness level and gradually increase the resistance as you get stronger.    
-        """)
+        st.markdown("""
+        <div class="tutorial-card">
+            <h3>Step-by-Step Guide</h3>
+            <div class="progress-bar"></div>
+            <ul>
+                <li>Stand up straight with a dumbbell in each hand</li>
+                <li>Keep your elbows close to your torso</li>
+                <li>Rotate palms forward</li>
+                <li>Exhale and curl the weights</li>
+                <li>Contract biceps fully</li>
+                <li>Hold briefly at the top</li>
+                <li>Inhale and lower slowly</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
     with col2:
-        st.image("./gif/bicep.gif")
-
-
+        st.image("models/gif/bicep.gif", use_container_width=True)
 
 elif app_mode == "Squats":
-    st.markdown("## Squats")
-    st.markdown("Here's a step-by-step tutorial for performing Squats:")
+    st.markdown("""
+    <div class="header">
+        <h2>🦵 Squats Tutorial</h2>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
-    st.write("##")
     with col1:
-        st.write("""
-        - Stand with your feet slightly wider than shoulder-width apart, toes pointing slightly outward. You can also experiment with different foot positions to find what's most comfortable for you.
-        
-        - Engage your core muscles by pulling your belly button in towards your spine. Keep your back straight and maintain good posture throughout the exercise.
-        
-        - Begin the squat by bending your knees and pushing your hips back, as if you're sitting back into a chair. Make sure to keep your weight on your heels and your knees tracking in line with your toes.
-        
-        - Lower your body down until your thighs are parallel to the ground. If you have the flexibility and mobility, you can go lower, but it's important to maintain proper form throughout the movement.
-        
-        - Pause for a moment at the bottom of the squat, and then begin to push through your heels and straighten your legs to return to the starting position. Keep your core engaged and maintain control of the movement.
-        
-        - As you come back up, avoid locking your knees at the top. Maintain a slight bend in your knees to keep tension on the muscles and avoid unnecessary strain.
-        
-        - Repeat the squat for your desired number of repetitions. Start with a weight or bodyweight that allows you to maintain proper form, and gradually increase the difficulty as you become more comfortable and stronger.
-
-        Additional tips:
-        - Keep your chest up and your gaze forward throughout the exercise. Avoid rounding your back or looking down.
-        - Exhale as you push up from the squat and inhale as you lower down. Breathing properly helps stabilize your core and maintain control.
-
-        Remember, it's important to listen to your body and start with a weight or intensity level that is appropriate for your fitness level. Gradually progress as you gain strength and confidence in your squatting technique.   
-        """)
+        st.markdown("""
+        <div class="tutorial-card">
+            <h3>Step-by-Step Guide</h3>
+            <div class="progress-bar"></div>
+            <ul>
+                <li>Stand with feet shoulder-width apart</li>
+                <li>Engage your core</li>
+                <li>Keep back straight</li>
+                <li>Lower until thighs are parallel</li>
+                <li>Push through heels to stand</li>
+                <li>Keep chest up</li>
+                <li>Breathe properly</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
     with col2:
-        st.image("./gif/squats.gif")
+        st.image("models/gif/squats.gif", use_container_width=True)
 
 elif app_mode == "Pushups":
-    st.markdown("## Pushups")
-    st.markdown("Here's a step-by-step tutorial for performing Pushups:")
+    st.markdown("""
+    <div class="header">
+        <h2>💪 Pushups Tutorial</h2>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
-        st.write("##")
-        st.write("""
-        - Start in a high plank position with your palms flat on the floor, hands shoulder-width apart, shoulders stacked directly above your wrists, legs extended behind you, and your core and glutes engaged.
-
-        - Bend your elbows and begin to lower your body down to the floor. When your chest grazes it, extend your elbows and return to the start. Focus on keeping your elbows close to your body during the movement.
-
-        - Complete as many reps as you can with good form. If you can't perform at least 3–5 reps, modify the movement by dropping to your knees or doing wall push-ups.
-
-        Remember, it's important to listen to your body and start with a weight or intensity level that is appropriate for your fitness level. Gradually progress as you gain strength and confidence in your pushup technique.
-   
-        """)
+        st.markdown("""
+        <div class="tutorial-card">
+            <h3>Step-by-Step Guide</h3>
+            <div class="progress-bar"></div>
+            <ul>
+                <li>Start in high plank position</li>
+                <li>Hands shoulder-width apart</li>
+                <li>Lower body to floor</li>
+                <li>Keep elbows close</li>
+                <li>Push back up</li>
+                <li>Maintain straight body</li>
+                <li>Breathe steadily</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
     with col2:
-        st.image("./gif/pushups.gif")
+        st.image("models/gif/pushups.gif", use_container_width=True)
 
 elif app_mode == "Shoulder press":
-    st.markdown("## Shoulder press")
-    st.markdown("Here's a step-by-step tutorial for performing Shoulder Press:")
+    st.markdown("""
+    <div class="header">
+        <h2>💪 Shoulder Press Tutorial</h2>
+    </div>
+    """, unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
-        st.write("##")
-        st.write("""
-        - Stand with your feet shoulder-width apart and hold a dumbbell in each hand. Raise the dumbbells to your shoulders, palms facing forward. This is your starting position.
-
-        - Press the weights upward until your arms are fully extended overhead. Keep your head and neck stationary.
-
-        - Pause at the top, then lower the weights back to the starting position.
-
-        Remember, it's important to listen to your body and start with a weight or intensity level that is appropriate for your fitness level. Gradually progress as you gain strength and confidence in your shoulder press technique.
-   
-        """)
+        st.markdown("""
+        <div class="tutorial-card">
+            <h3>Step-by-Step Guide</h3>
+            <div class="progress-bar"></div>
+            <ul>
+                <li>Stand with feet shoulder-width apart</li>
+                <li>Hold dumbbells at shoulders</li>
+                <li>Press weights overhead</li>
+                <li>Keep head and neck still</li>
+                <li>Lower weights slowly</li>
+                <li>Maintain control</li>
+                <li>Breathe properly</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
     with col2:
-        st.image("./gif/shoulder.gif")
+        st.image("models/gif/shoulder.gif", use_container_width=True)
+
+# Add a footer with animation
+if workout_animation:
+    st.markdown("""
+    <div class="animation-container">
+        <div style="text-align: center;">
+            <h3>Keep pushing your limits! 💪</h3>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    st_lottie(workout_animation, height=100, key="footer")
