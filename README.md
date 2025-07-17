@@ -1,6 +1,6 @@
 # AI-Fitness-Trainer
 This is a web application with followng features:
-1. Ecxercise form tracking.
+1. Excercise form tracking.
 2. Rep counting.
 3. Tutorials of each excercise(both video as well as text based)
 4. Daily Nutrition Tracker
